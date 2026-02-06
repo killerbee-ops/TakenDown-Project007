@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agentic Honey-Pot Interface</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .container { background: #f5f5f5; padding: 20px; border-radius: 10px; }
+        input, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+        button { background: #007cba; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #005a87; }
+        .response { background: white; padding: 15px; margin: 10px 0; border-radius: 5px; border-left: 4px solid #007cba; }
+        .scam-detected { border-left-color: #dc3545; }
+        .intelligence { background: #fff3cd; padding: 10px; margin: 10px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍯 Agentic Honey-Pot System</h1>
+        <p>Send messages to test scam detection and AI agent responses</p>
+        
+        <input type="text" id="conversationId" placeholder="Conversation ID (optional)" />
+        <textarea id="messageInput" rows="3" placeholder="Enter scam message here..."></textarea>
+        <button onclick="sendMessage()">Send Message</button>
+        
+        <div id="responses"></div>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const message = document.getElementById('messageInput').value;
+            const conversationId = document.getElementById('conversationId').value || 'web_' + Date.now();
+            
+            if (!message.trim()) {
+                alert('Please enter a message');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:5000/api/message', {
+                    method: 'POST',
+                    headers: {
+                        'X-API-Key': 'your-api-key-here',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        conversation_id: conversationId
+                    })
+                });
+
+                const data = await response.json();
+                displayResponse(message, data);
+                document.getElementById('messageInput').value = '';
+                
+            } catch (error) {
+                alert('Error: Make sure the server is running on localhost:5000');
+            }
+        }
+
+        function displayResponse(userMessage, data) {
+            const responsesDiv = document.getElementById('responses');
+            
+            const responseHtml = `
+                <div class="response ${data.scam_detected ? 'scam-detected' : ''}">
+                    <strong>Your Message:</strong> ${userMessage}<br>
+                    <strong>Scam Detected:</strong> ${data.scam_detected ? '🚨 YES' : '✅ NO'}<br>
+                    <strong>Agent Response:</strong> ${data.agent_response || 'No response'}<br>
+                    <strong>Turn Count:</strong> ${data.engagement_metrics.turn_count}<br>
+                    <strong>Duration:</strong> ${data.engagement_metrics.duration_seconds.toFixed(1)}s
+                    
+                    ${(data.extracted_intelligence.bank_accounts.length > 0 || 
+                       data.extracted_intelligence.upi_ids.length > 0 || 
+                       data.extracted_intelligence.phishing_urls.length > 0) ? 
+                    `<div class="intelligence">
+                        <strong>🎯 Extracted Intelligence:</strong><br>
+                        ${data.extracted_intelligence.bank_accounts.length > 0 ? 'Bank Accounts: ' + data.extracted_intelligence.bank_accounts.join(', ') + '<br>' : ''}
+                        ${data.extracted_intelligence.upi_ids.length > 0 ? 'UPI IDs: ' + data.extracted_intelligence.upi_ids.join(', ') + '<br>' : ''}
+                        ${data.extracted_intelligence.phishing_urls.length > 0 ? 'Phishing URLs: ' + data.extracted_intelligence.phishing_urls.join(', ') : ''}
+                    </div>` : ''}
+                </div>
+            `;
+            
+            responsesDiv.innerHTML = responseHtml + responsesDiv.innerHTML;
+        }
+
+        // Allow Enter key to send message
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

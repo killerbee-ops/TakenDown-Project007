@@ -1,0 +1,7 @@
+Flask==2.3.3
+gunicorn==21.2.0
+Werkzeug==2.3.7
+openai==0.28.1
+geoip2==4.7.0
+python-whois==0.8.0
+requests==2.31.0

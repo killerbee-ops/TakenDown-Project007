@@ -1,0 +1,12 @@
+2026-02-05 20:32:28,250 - INFO - Starting Government Agentic Honey-Pot System v2.0
+2026-02-05 20:32:28,262 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.18.76.153:5000
+2026-02-05 20:32:28,262 - INFO - [33mPress CTRL+C to quit[0m
+2026-02-05 20:34:09,486 - INFO - Starting Government Agentic Honey-Pot System v2.0
+2026-02-05 20:34:09,507 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.18.76.153:5000
+2026-02-05 20:34:09,508 - INFO - [33mPress CTRL+C to quit[0m
